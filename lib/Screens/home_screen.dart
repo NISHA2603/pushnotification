@@ -33,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
   // }
 
   @override
-  void initState() {
+  Future<void> initStat {
     // TODO: implement initState
     super.initState();
     // firebaseCloudMessaging_Listeners();
@@ -43,50 +43,71 @@ class _HomeScreenState extends State<HomeScreen> {
       print("=================================== > "+value.toString());
     });
 
-    FirebaseMessaging.instance.getInitialMessage().then(
-      (message) {
-        print("======= FirebaseMessaging.instance.getInitialMessage");
-        print("======= $message");
-        if (message != null) {
-          print("New Notification");
-          // if (message.data['_id'] != null) {
-          //   Navigator.of(context).push(
-          //     MaterialPageRoute(
-          //       builder: (context) => DemoScreen(
-          //         id: message.data['_id'],
-          //       ),
-          //     ),
-          //   );
-          // }
-        }
-      },
+    // FirebaseMessaging.instance.getInitialMessage().then(
+    //   (message) {
+    //     print("======= FirebaseMessaging.instance.getInitialMessage");
+    //     print("======= $message");
+    //     if (message != null) {
+    //       print("New Notification");
+    //       // if (message.data['_id'] != null) {
+    //       //   Navigator.of(context).push(
+    //       //     MaterialPageRoute(
+    //       //       builder: (context) => DemoScreen(
+    //       //         id: message.data['_id'],
+    //       //       ),
+    //       //     ),
+    //       //   );
+    //       // }
+    //     }
+    //   },
+    // );
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
     );
 
-    // 2. This method only call when App in forground it mean app must be opened
-    FirebaseMessaging.onMessage.listen(
-      (message) {
-        print("========= FirebaseMessaging.onMessage.listen");
-        if (message.notification != null) {
-          print(message.notification!.title);
-          print(message.notification!.body);
-          print("message.data11 ${message.data}");
-          // LocalNotificationService.display(message);
+    print('User granted permission: ${settings.authorizationStatus}');
 
-        }
-      },
-    );
+    // // 2. This method only call when App in forground it mean app must be opened
+    // FirebaseMessaging.onMessage.listen(
+    //   (message) {
+    //     print("========= FirebaseMessaging.onMessage.listen");
+    //     if (message.notification != null) {
+    //       print(message.notification!.title);
+    //       print(message.notification!.body);
+    //       print("message.data11 ${message.data}");
+    //       // LocalNotificationService.display(message);
+    //
+    //     }
+    //   },
 
-    // 3. This method only call when App in background and not terminated(not closed)
-    FirebaseMessaging.onMessageOpenedApp.listen(
-      (message) {
-        print("======= FirebaseMessaging.onMessageOpenedApp.listen");
-        if (message.notification != null) {
-          print(message.notification!.title);
-          print(message.notification!.body);
-          print("message.data22 ${message.data['_id']}");
-        }
-      },
-    );
+    // );
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('Got a message whilst in the foreground!');
+      print('Message data: ${message.data}');
+
+      if (message.notification != null) {
+        print('Message also contained a notification: ${message.notification}');
+      }
+    });
+    // // 3. This method only call when App in background and not terminated(not closed)
+    // FirebaseMessaging.onMessageOpenedApp.listen(
+    //   (message) {
+    //     print("======= FirebaseMessaging.onMessageOpenedApp.listen");
+    //     if (message.notification != null) {
+    //       print(message.notification!.title);
+    //       print(message.notification!.body);
+    //       print("message.data22 ${message.data['_id']}");
+    //     }
+    //   },
+    // );
   }
 
 
